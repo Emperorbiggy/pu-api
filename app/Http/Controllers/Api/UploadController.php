@@ -18,11 +18,18 @@ class UploadController extends Controller
         set_time_limit(300); // Increase to 5 minutes
         
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:10240', // 10MB max
+            'file' => 'required|file|max:10240', // 10MB max, any file type
         ]);
 
         try {
             $file = $request->file('file');
+            
+            // Additional validation for file extension
+            $allowedExtensions = ['xlsx', 'xls', 'csv'];
+            if (!in_array(strtolower($file->getClientOriginalExtension()), $allowedExtensions)) {
+                return response()->json(['error' => 'Invalid file type. Please upload an Excel file (.xlsx, .xls, .csv)'], 422);
+            }
+            
             $filePath = $file->storeAs('uploads', 'data_' . time() . '.' . $file->getClientOriginalExtension());
 
             // Use Laravel Excel's built-in import functionality
@@ -48,11 +55,18 @@ class UploadController extends Controller
         set_time_limit(300); // Increase to 5 minutes
         
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls|max:10240'
+            'file' => 'required|file|max:10240'
         ]);
 
         try {
             $file = $request->file('file');
+            
+            // Additional validation for file extension
+            $allowedExtensions = ['xlsx', 'xls', 'csv'];
+            if (!in_array(strtolower($file->getClientOriginalExtension()), $allowedExtensions)) {
+                return response()->json(['error' => 'Invalid file type. Please upload an Excel file (.xlsx, .xls, .csv)'], 422);
+            }
+            
             $filePath = $file->storeAs('uploads', 'wards_' . time() . '.' . $file->getClientOriginalExtension());
             
             $data = Excel::toArray([], $filePath);
@@ -81,11 +95,18 @@ class UploadController extends Controller
         set_time_limit(300); // Increase to 5 minutes
         
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls|max:10240'
+            'file' => 'required|file|max:10240'
         ]);
 
         try {
             $file = $request->file('file');
+            
+            // Additional validation for file extension
+            $allowedExtensions = ['xlsx', 'xls', 'csv'];
+            if (!in_array(strtolower($file->getClientOriginalExtension()), $allowedExtensions)) {
+                return response()->json(['error' => 'Invalid file type. Please upload an Excel file (.xlsx, .xls, .csv)'], 422);
+            }
+            
             $filePath = $file->storeAs('uploads', 'polling_units_' . time() . '.' . $file->getClientOriginalExtension());
             
             $data = Excel::toArray([], $filePath);

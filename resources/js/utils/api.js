@@ -7,17 +7,30 @@ export const apiRequest = async (endpoint, options = {}) => {
 
     const defaultOptions = {
         headers: {
-            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
         },
+    };
+
+    // Don't set Content-Type for FormData (let browser set it with boundary)
+    if (!(options.body instanceof FormData)) {
+        defaultOptions.headers['Content-Type'] = 'application/json';
+    }
+
+    const finalOptions = {
+        ...defaultOptions,
         ...options,
+        headers: {
+            ...defaultOptions.headers,
+            ...options.headers,
+        },
     };
 
     try {
-        const response = await fetch(url, defaultOptions);
+        const response = await fetch(url, finalOptions);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
         
         return await response.json();
