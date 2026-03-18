@@ -10,4 +10,20 @@ export default defineConfig({
         }),
         react(),
     ],
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://pu.osun.accordofficial.com',
+                changeOrigin: true,
+                secure: false,
+            },
+        },
+    },
+    define: {
+        'import.meta.env.VITE_API_URL': JSON.stringify(
+            process.env.NODE_ENV === 'production' 
+                ? 'http://pu.osun.accordofficial.com' 
+                : 'http://localhost:8000'
+        ),
+    },
 });

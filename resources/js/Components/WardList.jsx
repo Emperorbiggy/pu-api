@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../utils/api';
 
 export default function WardList() {
     const [wards, setWards] = useState([]);
@@ -20,8 +21,7 @@ export default function WardList() {
 
     const fetchWards = async () => {
         try {
-            const response = await fetch('/api/wards');
-            const data = await response.json();
+            const data = await apiRequest('/api/wards');
             setWards(data);
         } catch (error) {
             console.error('Error fetching wards:', error);
@@ -32,8 +32,7 @@ export default function WardList() {
 
     const fetchLgas = async () => {
         try {
-            const response = await fetch('/api/lgas');
-            const data = await response.json();
+            const data = await apiRequest('/api/lgas');
             setLgas(data);
         } catch (error) {
             console.error('Error fetching LGAs:', error);
@@ -43,19 +42,14 @@ export default function WardList() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/wards', {
+            await apiRequest('/api/wards', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(formData),
             });
             
-            if (response.ok) {
-                setFormData({ name: '', code: '', lga_id: '', description: '' });
-                setShowForm(false);
-                fetchWards();
-            }
+            setFormData({ name: '', code: '', lga_id: '', description: '' });
+            setShowForm(false);
+            fetchWards();
         } catch (error) {
             console.error('Error creating ward:', error);
         }
@@ -64,7 +58,7 @@ export default function WardList() {
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this ward?')) {
             try {
-                await fetch(`/api/wards/${id}`, {
+                await apiRequest(`/api/wards/${id}`, {
                     method: 'DELETE',
                 });
                 fetchWards();

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiRequest } from '../utils/api';
 
 export default function UploadComponent() {
     const [uploadType, setUploadType] = useState('all');
@@ -35,22 +36,16 @@ export default function UploadComponent() {
                 endpoint = '/api/upload-polling-units';
             }
 
-            const response = await fetch(endpoint, {
+            const data = await apiRequest(endpoint, {
                 method: 'POST',
                 body: formData,
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setResult(data);
-                setFile(null);
-                document.getElementById('file-input').value = '';
-            } else {
-                setError(data.error || 'Upload failed');
-            }
+            setResult(data);
+            setFile(null);
+            document.getElementById('file-input').value = '';
         } catch (err) {
-            setError('Network error. Please try again.');
+            setError(err.message || 'Upload failed');
         } finally {
             setUploading(false);
         }

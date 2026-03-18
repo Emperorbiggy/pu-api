@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../utils/api';
 
 export default function PollingUnitList() {
     const [pollingUnits, setPollingUnits] = useState([]);
@@ -24,8 +25,7 @@ export default function PollingUnitList() {
 
     const fetchPollingUnits = async () => {
         try {
-            const response = await fetch('/api/polling-units');
-            const data = await response.json();
+            const data = await apiRequest('/api/polling-units');
             setPollingUnits(data);
         } catch (error) {
             console.error('Error fetching polling units:', error);
@@ -36,8 +36,7 @@ export default function PollingUnitList() {
 
     const fetchWards = async () => {
         try {
-            const response = await fetch('/api/wards');
-            const data = await response.json();
+            const data = await apiRequest('/api/wards');
             setWards(data);
         } catch (error) {
             console.error('Error fetching wards:', error);
@@ -46,8 +45,7 @@ export default function PollingUnitList() {
 
     const fetchLgas = async () => {
         try {
-            const response = await fetch('/api/lgas');
-            const data = await response.json();
+            const data = await apiRequest('/api/lgas');
             setLgas(data);
         } catch (error) {
             console.error('Error fetching LGAs:', error);
@@ -57,22 +55,17 @@ export default function PollingUnitList() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/polling-units', {
+            await apiRequest('/api/polling-units', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify({
                     ...formData,
                     registered_voters: parseInt(formData.registered_voters) || 0
                 }),
             });
             
-            if (response.ok) {
-                setFormData({ name: '', code: '', ward_id: '', registered_voters: '', description: '' });
-                setShowForm(false);
-                fetchPollingUnits();
-            }
+            setFormData({ name: '', code: '', ward_id: '', registered_voters: '', description: '' });
+            setShowForm(false);
+            fetchPollingUnits();
         } catch (error) {
             console.error('Error creating polling unit:', error);
         }
@@ -81,7 +74,7 @@ export default function PollingUnitList() {
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this polling unit?')) {
             try {
-                await fetch(`/api/polling-units/${id}`, {
+                await apiRequest(`/api/polling-units/${id}`, {
                     method: 'DELETE',
                 });
                 fetchPollingUnits();

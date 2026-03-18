@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../utils/api';
 
 export default function LgaList() {
     const [lgas, setLgas] = useState([]);
@@ -16,8 +17,7 @@ export default function LgaList() {
 
     const fetchLgas = async () => {
         try {
-            const response = await fetch('/api/lgas');
-            const data = await response.json();
+            const data = await apiRequest('/api/lgas');
             setLgas(data);
         } catch (error) {
             console.error('Error fetching LGAs:', error);
@@ -29,19 +29,14 @@ export default function LgaList() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('/api/lgas', {
+            await apiRequest('/api/lgas', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(formData),
             });
             
-            if (response.ok) {
-                setFormData({ name: '', code: '', description: '' });
-                setShowForm(false);
-                fetchLgas();
-            }
+            setFormData({ name: '', code: '', description: '' });
+            setShowForm(false);
+            fetchLgas();
         } catch (error) {
             console.error('Error creating LGA:', error);
         }
@@ -50,7 +45,7 @@ export default function LgaList() {
     const handleDelete = async (id) => {
         if (confirm('Are you sure you want to delete this LGA?')) {
             try {
-                await fetch(`/api/lgas/${id}`, {
+                await apiRequest(`/api/lgas/${id}`, {
                     method: 'DELETE',
                 });
                 fetchLgas();
