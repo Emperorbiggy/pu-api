@@ -25,6 +25,16 @@ export const apiRequest = async (endpoint, options = {}) => {
         },
     };
 
+    // Debug: Log request details for FormData
+    if (options.body instanceof FormData) {
+        console.log('FormData request:', {
+            url,
+            method: finalOptions.method || 'GET',
+            headers: finalOptions.headers,
+            formDataEntries: Array.from(options.body.entries())
+        });
+    }
+
     try {
         const response = await fetch(url, finalOptions);
         

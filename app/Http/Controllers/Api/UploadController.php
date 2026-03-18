@@ -17,6 +17,14 @@ class UploadController extends Controller
     {
         set_time_limit(300); // Increase to 5 minutes
         
+        // Debug: Log the request data
+        \Log::info('Upload request data:', [
+            'hasFile' => $request->hasFile('file'),
+            'allFiles' => $request->allFiles(),
+            'requestInput' => $request->all(),
+            'headers' => $request->headers->all()
+        ]);
+        
         $request->validate([
             'file' => 'required|file|max:10240', // 10MB max, any file type
         ]);
