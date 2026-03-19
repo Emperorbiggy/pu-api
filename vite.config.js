@@ -13,7 +13,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'https://api.sandbox.easinovation.com.ng',
+                target: 'http://pu.humanity.peoplefirst.org.ng',
                 changeOrigin: true,
                 secure: false,
             },
@@ -22,7 +22,7 @@ export default defineConfig({
     define: {
         'import.meta.env.VITE_API_URL': JSON.stringify(
             process.env.NODE_ENV === 'production' 
-                ? 'https://api.sandbox.easinovation.com.ng' 
+                ? 'http://pu.humanity.peoplefirst.org.ng' 
                 : 'http://localhost:8000'
         ),
     },
