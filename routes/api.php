@@ -22,6 +22,7 @@ Route::get('all-polling-units', [PollingUnitController::class, 'index']);
 // Specific filtering routes
 Route::get('wards-by-lga/{lga_id}', [WardController::class, 'index']);
 Route::get('polling-units-by-ward/{ward_id}', [PollingUnitController::class, 'index']);
+Route::get('polling-units-by-ward-path/{lga}/{ward}/{polling_unit}', [PollingUnitController::class, 'getByWardPath']);
 Route::get('polling-units-by-lga/{lga_id}', [PollingUnitController::class, 'index']);
 
 Route::post('upload', [UploadController::class, 'uploadAll']);

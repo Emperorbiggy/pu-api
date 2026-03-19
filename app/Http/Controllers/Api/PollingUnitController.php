@@ -45,6 +45,36 @@ class PollingUnitController extends Controller
         }
     }
 
+    public function getByWardPath($lga, $ward, $polling_unit)
+    {
+        try {
+            $query = PollingUnit::with(['ward.lga'])
+                ->whereHas('ward', function ($q) use ($ward) {
+                    $q->where('name', 'LIKE', '%' . $ward . '%');
+                })
+                ->whereHas('ward.lga', function ($q) use ($lga) {
+                    $q->where('name', 'LIKE', '%' . $lga . '%');
+                })
+                ->where('name', 'LIKE', '%' . $polling_unit . '%');
+            
+            return $query->get()->map(function ($pu) {
+                return [
+                    'id' => $pu->id,
+                    'name' => $pu->name,
+                    'code' => $pu->code,
+                    'registered_voters' => $pu->registered_voters,
+                    'description' => $pu->description,
+                    'ward_id' => $pu->ward_id,
+                    'ward_name' => $pu->ward ? $pu->ward->name : null,
+                    'lga_id' => $pu->ward && $pu->ward->lga ? $pu->ward->lga->id : null,
+                    'lga_name' => $pu->ward && $pu->ward->lga ? $pu->ward->lga->name : null
+                ];
+            });
+        } catch (\Exception $error) {
+            return response()->json(['error' => 'Failed to fetch polling units by ward path'], 500);
+        }
+    }
+
     public function store(Request $request)
     {
         try {

@@ -13,7 +13,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/api': {
-                target: 'http://pu.osun.accordofficial.com',
+                target: 'https://api.sandbox.easinovation.com.ng',
                 changeOrigin: true,
                 secure: false,
             },
@@ -22,7 +22,7 @@ export default defineConfig({
     define: {
         'import.meta.env.VITE_API_URL': JSON.stringify(
             process.env.NODE_ENV === 'production' 
-                ? 'http://pu.osun.accordofficial.com' 
+                ? 'https://api.sandbox.easinovation.com.ng' 
                 : 'http://localhost:8000'
         ),
     },
